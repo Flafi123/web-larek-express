@@ -1,14 +1,14 @@
 import { ErrorRequestHandler } from 'express';
+import { isCelebrateError } from 'celebrate';
 
 const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-  if (err.name === 'CelebrateError' || err.joi || (err.details && typeof err.details.get === 'function')) {
+  if (isCelebrateError(err)) {
     let errorMessage = 'Ошибка валидации входящих данных';
 
-    if (err.details && typeof err.details.get === 'function') {
-      const errorDetails = err.details.get('body') || err.details.get('params') || err.details.get('headers');
-      if (errorDetails) {
-        errorMessage = errorDetails.message;
-      }
+    const joiError = err.details.get('body') || err.details.get('params') || err.details.get('headers');
+    
+    if (joiError && joiError.details && joiError.details.length > 0) {
+      errorMessage = joiError.details[0].message;
     } else if (err.message) {
       errorMessage = err.message;
     }

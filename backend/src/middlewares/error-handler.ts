@@ -6,7 +6,7 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     let errorMessage = 'Ошибка валидации входящих данных';
 
     const joiError = err.details.get('body') || err.details.get('params') || err.details.get('headers');
-    
+
     if (joiError && joiError.details && joiError.details.length > 0) {
       errorMessage = joiError.details[0].message;
     } else if (err.message) {

@@ -17,17 +17,15 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       return next(new BadRequestError('Один или несколько товаров не найдены в базе данных'));
     }
 
-    let calculatedTotal = 0;
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const product of dbProducts) {
-      if (product.price === null) {
-        return next(new BadRequestError(`Товар "${product.title}" не продается`));
-      }
-
-      const countInOrder = items.filter((id) => id === product._id.toString()).length;
-      calculatedTotal += product.price * countInOrder;
+    const hasInvalidPrice = dbProducts.some((product) => product.price === null);
+    if (hasInvalidPrice) {
+      return next(new BadRequestError('Один или несколько товаров не продаются'));
     }
+
+    const calculatedTotal = dbProducts.reduce((sum, product) => {
+      const countInOrder = items.filter((id) => id === product._id.toString()).length;
+      return sum + (product.price || 0) * countInOrder;
+    }, 0);
 
     if (typeof total !== 'number' || total !== calculatedTotal) {
       return next(new BadRequestError(`Сумма total (${total}) не совпадает с расчетной стоимостью товаров (${calculatedTotal})`));

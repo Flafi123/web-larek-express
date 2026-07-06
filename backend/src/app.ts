@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
 
-import { errors } from 'celebrate';
+// import { errors } from 'celebrate';
 
 import productRouter from './routes/product';
 import orderRouter from './routes/order';

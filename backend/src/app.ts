@@ -3,7 +3,6 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
-import { errors } from 'celebrate';
 
 import productRouter from './routes/product';
 import orderRouter from './routes/order';
@@ -39,7 +38,7 @@ app.use((_req, _res, next) => {
 
 app.use(errorLogger);
 
-app.use(errors());
+// app.use(errors());
 app.use(errorHandler);
 
 mongoose.set('strictQuery', true);
